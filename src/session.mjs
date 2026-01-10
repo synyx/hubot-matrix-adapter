@@ -1,10 +1,8 @@
-const sdk = require("matrix-js-sdk");
-const {
-  LocalStorageCryptoStore,
-} = require('matrix-js-sdk/lib/crypto/store/localStorage-crypto-store');
-const Store = require('./store')
+import sdk from "matrix-js-sdk";
+import {LocalStorageCryptoStore} from 'matrix-js-sdk/lib/crypto/store/localStorage-crypto-store.js';
+import Store from './store.mjs';
 
-class MatrixSession {
+export default class MatrixSession {
 
   constructor(botName, matrixServer, matrixUser, matrixPassword, logger, localStorage) {
     this.botName = botName;
@@ -33,7 +31,8 @@ class MatrixSession {
       accessToken: accessToken,
       userId: userId,
       deviceId: deviceId,
-      store: new Store(this.localStorage)
+      store: new Store(this.localStorage),
+      logger: this.logger
     });
 
     cb(null, this.client)
@@ -54,7 +53,8 @@ class MatrixSession {
         accessToken: data.access_token,
         userId: data.user_id,
         deviceId: data.device_id,
-        cryptoStore: new LocalStorageCryptoStore(that.localStorage)
+        cryptoStore: new LocalStorageCryptoStore(that.localStorage),
+        logger: this.logger
       });
 
       that.localStorage.setItem("access_token", data.access_token)
@@ -69,5 +69,3 @@ class MatrixSession {
   }
 
 }
-
-module.exports = MatrixSession
